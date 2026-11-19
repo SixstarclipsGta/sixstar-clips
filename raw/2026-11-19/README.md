@@ -64,4 +64,4 @@ Shorts: heli-steal (16, 0 to 13.2 s, dissolve to 15.0 to 27.5 s), heli-chase (18
 | 30-airfield-hangar-climb-jet.mp4 | Across the airfield to the hangars, gets out next to the jets about 10.5 s, runs with a pistol, climbs up a jet 24 to 25.5 s, "P-996 LAZER" about 28 s | 30 at 8.520 s = 31 at 0 s |
 | 31-jet-cockpit-shot-wasted.mp4 | Gets out of the car at the hangar, runs to the jet, climbs into the cockpit about 16.5 to 18 s ("P-996 LAZER"), soldiers firing about 22.8 s, shot in the cockpit about 25 s, WASTED about 27.6 s | end |
 
-Shorts planned: jet-cockpit-wasted (31), sheriff-pole-crash (27 end), beach-say-hi (24 start). Not made yet.
+Shorts (story set, posted 19 Nov night): beach-fight (24, 1.3 to 15.2 s), two-cars-cant-drive (24 22.0 s to end, dissolve 25 0 to 18.5 s, dissolve 25 25.8 s to end), cop-car-smart-way (27 21.0 s to end, dissolve 28 0 to 14 s, dissolve 28 20.5 s to end), cop-car-airbase-entry (29 frames 360 to 1501 joined to 30 frames 0 to 540), jet-wishlist (31, 0.8 s to end). Unused first cuts: jet-cockpit, cop-car-trees.
