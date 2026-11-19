@@ -24,3 +24,14 @@ PS5 captures, 1920x1080, 59.94 fps, about 30 s each, dusk. One continuous play s
 The original upload contained one exact duplicate of 07, which was dropped.
 
 Shorts made from these (branch `clips`): steal-tank (01 + 02), airbase-gate (07), psycho-airport (08), heli-wasted (09), army-base-escape (10 + 11).
+
+## Third session (evening upload, daylight): army base series
+
+| File | What happens | Overlap with the next file |
+|---|---|---|
+| 12-jeep-gate-crash-flip.mp4 | Black jeep drives through the Mile Zero Air Station gate (about 9 s), onto the grass, hits a pole, 4 stars about 16 s, crash and long roll-over 21 to 27 s, lands upside down (camera cut 28.1 s) | separate attempt |
+| 13-pickup-rims-runway-jet-wasted.mp4 | Silver pickup on bare rims (sparks) across the runway, big black army jet, helicopter overhead about 15 s, gets out about 17.5 s, runs under the jet, shot, WASTED about 24 s, black from about 28 s | separate attempt |
+| 14-sheriff-car-gate-base-drive.mp4 | Sheriff police car drives through the gate past the guards (about 5 to 7 s), through the base to the airfield edge, "Hungry" note, map opens about 26.5 s | 14 at about 20.54 s (frame about 1231) = 15 at 0 s |
+| 15-sheriff-car-airfield-helicopter.mp4 | Map until about 8.8 s, drives across the airfield to an army helicopter, car shot up about 25 s, gets out and goes to the helicopter door, wide shot 29 s | end |
+
+Shorts: army-base-jeep-flip (12, 6.5 to 29.8 s), army-jet-wasted (13, 3.0 to 27.8 s), police-car-army-heli (14 1.0 to 12.5 s, dissolve into 15 9.1 s to end).
