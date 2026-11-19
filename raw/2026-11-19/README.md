@@ -50,3 +50,18 @@ Shorts: army-base-jeep-flip (12, 6.5 to 29.8 s), army-jet-wasted (13, 3.0 to 27.
 | 23-swim-shot-sheriff-boat-wasted.mp4 | Swims away, bullets hit the water about 13 s, dives, shot underwater, WASTED about 24.3 s with the sheriff boat, black from about 28 s | end |
 
 Shorts: heli-steal (16, 0 to 13.2 s, dissolve to 15.0 to 27.5 s), heli-chase (18 frames 1127 to 1290, joined to 19 0 to 13.2 s, dissolve to 19 17.2 to 27.0 s), heli-fuel-empty (22, 0 to 21.5 s), swim-cops-wasted (23, 3.0 to 27.0 s).
+
+## Fifth session (night upload, daylight): beach to sheriff car to the jet
+
+| File | What happens | Overlap with the next file |
+|---|---|---|
+| 24-beach-knock-over-ev-car.mp4 | Runs along the Keys beach knocking people over (woman about 7.8 s, man in yellow about 13.9 s), runs to an EV charging lot about 21 s, gets into a red EV about 28 s | gap before 25 |
+| 25-ev-car-out-steal-pickup.mp4 | Gets out of the EV, kicks a charger about 3 s, tries the doors of a red pickup with a swim ring in the bed, gets in ("Vapid Sandking XL" about 13.5 s), drives round the lot, gets out about 28 s | gap before 26 |
+| 26-map-air-station-sheriff-car.mp4 | Map with Mile Zero Air Station set as destination 0 to 13 s, black about 13.5 s, sheriff car in the bushes from about 15 s, drives off | 26 at 13.52 s = 27 at 0 s |
+| 27-sheriff-car-pole-crash.mp4 | Drives the sheriff car past the beach houses and down a road, hits a utility pole about 26 s, crash camera about 26.4 s to end | gap before 28 |
+| 28-crashed-car-mangrove-run-new-sheriff-car.mp4 | Smashed sheriff car at the pole, drives a bit, gets out about 7.5 s, runs through mangroves 9 to 23 s, reaches two crashed sheriff cars and gets into one about 27 s | gap before 29 |
+| 29-sheriff-car-airbase-gate-airfield.mp4 | Drives to the Mile Zero Air Station gate about 10.5 s, through the barriers about 12 s (sparks), through the base, through a fence about 24 s onto the airfield | 29 at about 25.0 s = 30 at 0 s (30 frame 59 = 29 at 26.00 s) |
+| 30-airfield-hangar-climb-jet.mp4 | Across the airfield to the hangars, gets out next to the jets about 10.5 s, runs with a pistol, climbs up a jet 24 to 25.5 s, "P-996 LAZER" about 28 s | 30 at 8.520 s = 31 at 0 s |
+| 31-jet-cockpit-shot-wasted.mp4 | Gets out of the car at the hangar, runs to the jet, climbs into the cockpit about 16.5 to 18 s ("P-996 LAZER"), soldiers firing about 22.8 s, shot in the cockpit about 25 s, WASTED about 27.6 s | end |
+
+Shorts planned: jet-cockpit-wasted (31), sheriff-pole-crash (27 end), beach-say-hi (24 start). Not made yet.
