@@ -41,6 +41,8 @@ CAP = [
 HUD_SRC = ("g2", 17.8, 5.0)
 HUD_SEG = 5  # money counter $0 -> $600 at 18.0-21.0 in g2
 
+CARD = "card.png"  # brand card file inside W
+
 # Optional: python3 story.py CONFIG.py  (a file that sets W, OUT, SEG, CAP, HUD_SRC, HUD_SEG)
 if len(sys.argv) > 1:
     exec(open(sys.argv[1]).read())
@@ -139,13 +141,13 @@ def main():
         fc.append(f"[{prev_a}][a{i}]acrossfade=d={FD}[y{i}]")
         prev_v, prev_a = f"x{i}", f"y{i}"
     n = len(SEG)
-    inputs += ["-i", f"{W}/card.png"]
+    inputs += ["-i", f"{W}/{CARD}"]
     card_idx = n
     fc.append(f"[{prev_v}]pad=1080:1920:0:460:color=0x0a0b10[p0];[p0][{card_idx}:v]overlay=0:0[c0]")
     cur = "c0"
     k = n + 1
     for j, (seg, a0, a1, label, text, sub) in enumerate(CAP):
-        png = f"{W}/cap{j}.png"
+        png = f"{W}/{os.path.basename(OUT)[:-4]}_cap{j}.png"
         text_png(png, label, text, None if sub == "HUD" else sub, sub == "HUD")
         ta = starts[seg] + a0 + (FD / 2 if a0 == 0 and seg > 0 else 0)
         tb = starts[seg] + a1 - (FD / 2 if seg < n - 1 and a1 >= SEG[seg][2] - 0.01 else 0)
