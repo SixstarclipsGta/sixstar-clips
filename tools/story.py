@@ -41,6 +41,10 @@ CAP = [
 HUD_SRC = ("g2", 17.8, 5.0)
 HUD_SEG = 5  # money counter $0 -> $600 at 18.0-21.0 in g2
 
+# Optional: python3 story.py CONFIG.py  (a file that sets W, OUT, SEG, CAP, HUD_SRC, HUD_SEG)
+if len(sys.argv) > 1:
+    exec(open(sys.argv[1]).read())
+
 
 def text_png(path, label, text, sub, hud_space):
     im = Image.new("RGBA", (1080, 380), (0, 0, 0, 0))
@@ -93,12 +97,17 @@ def text_png(path, label, text, sub, hud_space):
         y += int(size * 1.12)
     if sub:
         sf = ImageFont.truetype(ANTON, 40)
-        e = emoji_img("📍", 38)
-        s = sub.replace("📍 ", "").upper()
-        sw = e.width + 10 + d.textlength(s, font=sf)
+        first = sub.split(" ")[0]
+        if first.isascii():
+            e, s = None, sub.upper()
+        else:
+            e, s = emoji_img(first, 38), sub[len(first):].strip().upper()
+        sw = (e.width + 10 if e else 0) + d.textlength(s, font=sf)
         x = (1080 - sw) // 2
-        im.paste(e, (int(x), y + 10), e)
-        d.text((x + e.width + 10, y + 4), s, font=sf, fill=(200, 205, 215, 255))
+        if e:
+            im.paste(e, (int(x), y + 10), e)
+            x += e.width + 10
+        d.text((x, y + 4), s, font=sf, fill=(200, 205, 215, 255))
     im.save(path)
 
 
@@ -112,7 +121,7 @@ def main():
     for i, (f, ss, du, x, gr, hold) in enumerate(SEG):
         inputs += ["-ss", str(ss), "-t", str(du), "-i", f"{W}/{f}.mp4"]
         src = f"[{i}:v]setpts=PTS-STARTPTS,fps=60000/1001"
-        if i == HUD_SEG:
+        if HUD_SEG is not None and i == HUD_SEG:
             fc.append(src + f",split[s{i}][h{i}]")
             fc.append(f"[h{i}]crop=190:86:1720:20,scale=380:172:flags=lanczos,pad=388:180:4:4:color=0x2de2d0,format=rgba,setpts=PTS+{starts[i]:.3f}/TB[hud]")
             src = f"[s{i}]null"
