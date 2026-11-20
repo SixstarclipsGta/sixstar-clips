@@ -42,6 +42,8 @@ HUD_SRC = ("g2", 17.8, 5.0)
 HUD_SEG = 5  # money counter $0 -> $600 at 18.0-21.0 in g2
 
 CARD = "card.png"  # brand card file inside W
+# Per-segment HUD (e.g. the altitude readout): {"segs": [1, 2], "crop": "w:h:x:y", "scale": 3.6}
+SEG_HUD = None
 
 # Optional: python3 story.py CONFIG.py  (a file that sets W, OUT, SEG, CAP, HUD_SRC, HUD_SEG)
 if len(sys.argv) > 1:
@@ -123,7 +125,13 @@ def main():
     for i, (f, ss, du, x, gr, hold) in enumerate(SEG):
         inputs += ["-ss", str(ss), "-t", str(du), "-i", f"{W}/{f}.mp4"]
         src = f"[{i}:v]setpts=PTS-STARTPTS,fps=60000/1001"
-        if HUD_SEG is not None and i == HUD_SEG:
+        if SEG_HUD and i in SEG_HUD["segs"]:
+            cw, ch_, _, _ = [int(v) for v in SEG_HUD["crop"].split(":")]
+            sw, sh = int(cw * SEG_HUD["scale"]) // 2 * 2, int(ch_ * SEG_HUD["scale"]) // 2 * 2
+            fc.append(src + f",split[s{i}][h{i}]")
+            fc.append(f"[h{i}]crop={SEG_HUD['crop']},scale={sw}:{sh}:flags=lanczos,pad={sw+8}:{sh+8}:4:4:color=0x2de2d0,format=rgba,setpts=PTS+{starts[i]:.3f}/TB[sh{i}]")
+            src = f"[s{i}]null"
+        elif HUD_SEG is not None and i == HUD_SEG:
             fc.append(src + f",split[s{i}][h{i}]")
             fc.append(f"[h{i}]crop=190:86:1720:20,scale=380:172:flags=lanczos,pad=388:180:4:4:color=0x2de2d0,format=rgba,setpts=PTS+{starts[i]:.3f}/TB[hud]")
             src = f"[s{i}]null"
@@ -151,16 +159,21 @@ def main():
         text_png(png, label, text, None if sub == "HUD" else sub, sub == "HUD")
         ta = starts[seg] + a0 + (FD / 2 if a0 == 0 and seg > 0 else 0)
         tb = starts[seg] + a1 - (FD / 2 if seg < n - 1 and a1 >= SEG[seg][2] - 0.01 else 0)
-        if seg == n - 1:
+        if seg == n - 1 and a1 >= SEG[seg][2] - 0.01:
             tb = total
         inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
         fc.append(f"[{cur}][{k}:v]overlay=0:1545:enable='between(t,{ta:.3f},{tb:.3f})'[c{j+1}]")
         cur = f"c{j+1}"
         k += 1
-        if sub == "HUD":
+        if sub == "HUD" and HUD_SEG is not None:
             t_hud = starts[seg] + (HUD_SRC[1] - SEG[seg][1])
             fc.append(f"[{cur}][hud]overlay=(W-w)/2:1722:eof_action=pass:enable='between(t,{t_hud+0.3:.3f},{tb:.3f})'[ch]")
             cur = "ch"
+    if SEG_HUD:
+        for i in SEG_HUD["segs"]:
+            a, b = starts[i] + FD / 2, starts[i] + SEG[i][2] - FD / 2
+            fc.append(f"[{cur}][sh{i}]overlay=(W-w)/2:1722:eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[sh_o{i}]")
+            cur = f"sh_o{i}"
     fc.append(f"[{cur}]fade=t=in:st=0:d=0.2,fade=t=out:st={total-0.4:.2f}:d=0.4,format=yuv420p[out]")
     fc.append(f"[{prev_a}]afade=t=in:st=0:d=0.2,afade=t=out:st={total-0.5:.2f}:d=0.5[aout]")
     cmd = ["ffmpeg", "-v", "error", "-y"] + inputs + ["-filter_complex", ";".join(fc), "-map", "[out]", "-map", "[aout]",
