@@ -117,14 +117,18 @@ def text_png(path, label, text, sub, hud_space):
 
 def main():
     starts, t = [], 0.0
+    def eff(s):
+        return s[2] / (s[6] if len(s) > 6 else 1.0) + s[5]
     for i, s in enumerate(SEG):
         starts.append(t)
-        t += s[2] + s[5] - FD
+        t += eff(s) - FD
     total = t + FD
     inputs, fc = [], []
-    for i, (f, ss, du, x, gr, hold) in enumerate(SEG):
+    for i, sg in enumerate(SEG):
+        f, ss, du, x, gr, hold = sg[:6]
+        sp = sg[6] if len(sg) > 6 else 1.0
         inputs += ["-ss", str(ss), "-t", str(du), "-i", f"{W}/{f}.mp4"]
-        src = f"[{i}:v]setpts=PTS-STARTPTS,fps=60000/1001"
+        src = f"[{i}:v]setpts=(PTS-STARTPTS)/{sp},fps=60000/1001"
         if SEG_HUD and i in SEG_HUD["segs"]:
             cw, ch_, _, _ = [int(v) for v in SEG_HUD["crop"].split(":")]
             sw, sh = int(cw * SEG_HUD["scale"]) // 2 * 2, int(ch_ * SEG_HUD["scale"]) // 2 * 2
@@ -136,12 +140,12 @@ def main():
             fc.append(f"[h{i}]crop=190:86:1720:20,scale=380:172:flags=lanczos,pad=388:180:4:4:color=0x2de2d0,format=rgba,setpts=PTS+{starts[i]:.3f}/TB[hud]")
             src = f"[s{i}]null"
         v = src + f",{gr},crop=1080:1080:{x}:0,unsharp=5:5:0.6,format=yuv420p,setsar=1,settb=AVTB"
-        a = f"[{i}:a]asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo"
+        a = f"[{i}:a]asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo" + (f",atempo={sp}" if sp != 1.0 else "")
         if hold:
             v += f",tpad=stop_mode=clone:stop_duration={hold}"
             a += f",apad=pad_dur={hold}"
         fc.append(v + f"[v{i}]")
-        fc.append(a + f",atrim=0:{du + hold}[a{i}]")
+        fc.append(a + f",atrim=0:{du / sp + hold}[a{i}]")
     prev_v, prev_a = "v0", "a0"
     for i in range(1, len(SEG)):
         off = starts[i]
@@ -158,8 +162,8 @@ def main():
         png = f"{W}/{os.path.basename(OUT)[:-4]}_cap{j}.png"
         text_png(png, label, text, None if sub == "HUD" else sub, sub == "HUD")
         ta = starts[seg] + a0 + (FD / 2 if a0 == 0 and seg > 0 else 0)
-        tb = starts[seg] + a1 - (FD / 2 if seg < n - 1 and a1 >= SEG[seg][2] - 0.01 else 0)
-        if seg == n - 1 and a1 >= SEG[seg][2] - 0.01:
+        tb = starts[seg] + a1 - (FD / 2 if seg < n - 1 and a1 >= eff(SEG[seg]) - SEG[seg][5] - 0.01 else 0)
+        if seg == n - 1 and a1 >= eff(SEG[seg]) - SEG[seg][5] - 0.01:
             tb = total
         inputs += ["-loop", "1", "-t", f"{total:.2f}", "-i", png]
         fc.append(f"[{cur}][{k}:v]overlay=0:1545:enable='between(t,{ta:.3f},{tb:.3f})'[c{j+1}]")
@@ -171,7 +175,7 @@ def main():
             cur = "ch"
     if SEG_HUD:
         for i in SEG_HUD["segs"]:
-            a, b = starts[i] + FD / 2, starts[i] + SEG[i][2] - FD / 2
+            a, b = starts[i] + FD / 2, starts[i] + eff(SEG[i]) - SEG[i][5] - FD / 2
             fc.append(f"[{cur}][sh{i}]overlay=(W-w)/2:1722:eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[sh_o{i}]")
             cur = f"sh_o{i}"
     fc.append(f"[{cur}]fade=t=in:st=0:d=0.2,fade=t=out:st={total-0.4:.2f}:d=0.4,format=yuv420p[out]")
