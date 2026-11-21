@@ -143,7 +143,7 @@ def main():
             fc.append(f"[h{i}]crop=190:86:1720:20,scale=380:172:flags=lanczos,pad=388:180:4:4:color=0x2de2d0,format=rgba,setpts=PTS+{starts[i]:.3f}/TB[hud]")
             src = f"[s{i}]null"
         v = src + f",{gr},crop=1080:1080:{x}:0,unsharp=5:5:0.6,format=yuv420p,setsar=1,settb=AVTB"
-        a = f"[{i}:a]asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo" + (f",atempo={sp}" if sp != 1.0 else "")
+        a = f"[{i}:a]asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo" + (("," + ",".join(["atempo=0.5"] * (1 if sp < 0.5 else 0) + [f"atempo={sp * 2 if sp < 0.5 else sp}"])) if sp != 1.0 else "")
         if hold:
             v += f",tpad=stop_mode=clone:stop_duration={hold}"
             a += f",apad=pad_dur={hold}"
