@@ -10,10 +10,10 @@ SEG = [
     ("11", 0.3, 4.2, 420, DAY, 0),          # chaos on the highway, take off past the truck
     ("11", 18.0, 3.5, 420, DAY, 0),         # traffic, building up
     ("11", 21.0, 1.0, 420, DAY, 0),         # the black sports car tries to pass
-    ("11", 22.0, 1.25, 420, DAY, 0, 0.5),   # the hit, half speed
-    ("11", 23.25, 2.5, 380, DAY, 0),        # game crash cam
+    ("11", 22.0, 1.25, 420, DAY, 0),        # the hit, real speed (Zubair: no slow-mo)
+    ("11cc", 0.0, 2.5, 420, DAY, 0),        # game crash cam, wide (both cars): 11cc = 11 23.25-25.75 crop 1440x1080 at x480 scaled 1080x810 over blur
     ("11", 25.75, 3.45, 420, DAY, 0),       # pushing him sideways down the road
-    ("11zr", 0.5, 1.6, 420, DAY, 0, 0.5),     # replay, 2x zoom, half speed
+    ("12", 1.0, 3.3, 420, DAY, 0),          # drives off
     ("12", 4.3, 2.2, 420, DAY, 0),          # off the road
     ("12", 6.0, 4.5, 420, DAY, 0, 1.3),     # rough ground, under the bridge
     ("12", 10.5, 3.5, 420, DAY, 0),         # climbing the embankment
