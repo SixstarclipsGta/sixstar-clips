@@ -45,6 +45,11 @@ CARD = "card.png"  # brand card file inside W
 # Per-segment HUD (e.g. the altitude readout): {"segs": [1, 2], "crop": "w:h:x:y", "scale": 3.6}
 SEG_HUD = None
 
+# 22 Nov style: STYLE = "simple" -> no brand card, no step captions; one TITLE line on top,
+# square video at VY, blurred zoomed copy of the same video behind. Configs set STYLE, TITLE.
+STYLE, TITLE, VY = "card", "", 560
+TITLE_FONT = "/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf"
+
 # Encoder (21 Nov: smaller files rule). Configs may override.
 CRF, PRESET, ABR = 24, "slow", "128k"
 
@@ -118,6 +123,43 @@ def text_png(path, label, text, sub, hud_space):
     im.save(path)
 
 
+def title_png(path, text):
+    """One plain white line (wraps to 2-3), TikTok-style, emoji kept at the end, centred above the video."""
+    im = Image.new("RGBA", (1080, 1920), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    emo = ""
+    words = text.split(" ")
+    if words and not words[-1].isascii():
+        emo, words = words[-1], words[:-1]
+    size = 74
+    f = ImageFont.truetype(TITLE_FONT, size)
+    ew = emoji_img(emo, int(size * 0.95)).width + 12 if emo else 0
+    lines, cur = [], ""
+    for w in words:
+        t = (cur + " " + w).strip()
+        if d.textlength(t, font=f) > 960 and cur:
+            lines.append(cur); cur = w
+        else:
+            cur = t
+    lines.append(cur)
+    if d.textlength(lines[-1], font=f) + ew > 980:
+        lines.append("")
+    lh = int(size * 1.22)
+    y = VY - 70 - lh * len(lines)
+    for i, l in enumerate(lines):
+        last = i == len(lines) - 1
+        lw = d.textlength(l, font=f) + (ew if last else 0)
+        x = (1080 - lw) / 2
+        for dx, dy in ((0, 3), (2, 2), (-2, 2)):
+            d.text((x + dx, y + dy), l, font=f, fill=(0, 0, 0, 150))
+        d.text((x, y), l, font=f, fill=(255, 255, 255, 255))
+        if last and emo:
+            e = emoji_img(emo, int(size * 0.95))
+            im.paste(e, (int(x + d.textlength(l, font=f) + (12 if l else 0)), y + int(size * 0.08)), e)
+        y += lh
+    im.save(path)
+
+
 def main():
     starts, t = [], 0.0
     def eff(s):
@@ -156,9 +198,15 @@ def main():
         fc.append(f"[{prev_a}][a{i}]acrossfade=d={FD}[y{i}]")
         prev_v, prev_a = f"x{i}", f"y{i}"
     n = len(SEG)
-    inputs += ["-i", f"{W}/{CARD}"]
-    card_idx = n
-    fc.append(f"[{prev_v}]pad=1080:1920:0:460:color=0x0a0b10[p0];[p0][{card_idx}:v]overlay=0:0[c0]")
+    if STYLE == "simple":
+        tp = f"{W}/{os.path.basename(OUT)[:-4]}_title.png"
+        title_png(tp, TITLE)
+        inputs += ["-i", tp]
+        fc.append(f"[{prev_v}]split[fg][bgs];[bgs]scale=1920:1920,crop=1080:1920:420:0,boxblur=30:3,eq=brightness=-0.28:saturation=0.9[bg];"
+                  f"[bg][fg]overlay=0:{VY}[p0];[p0][{n}:v]overlay=0:0[c0]")
+    else:
+        inputs += ["-i", f"{W}/{CARD}"]
+        fc.append(f"[{prev_v}]pad=1080:1920:0:460:color=0x0a0b10[p0];[p0][{n}:v]overlay=0:0[c0]")
     cur = "c0"
     k = n + 1
     for j, (seg, a0, a1, label, text, sub) in enumerate(CAP):
