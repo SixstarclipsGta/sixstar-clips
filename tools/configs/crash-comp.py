@@ -3,15 +3,16 @@
 # race = 21 Nov 10, sport/sportcc/rail = 22 Nov 11/11cc/12, sher = 21 Nov 06, pole/hum/gate/heli/heli2/flip = 19 Nov
 # 27/10/07/22/09/12.
 W = "/home/claude/crash/raw"
-OUT = "/home/claude/crash/crash-game.mp4"
+OUT = "/home/claude/crash/crash2-game.mp4"
 STYLE = "simple"
-TITLE = "GTA 6 physics are actually insane 😭"
+TITLE = "POV: you're about to crash in GTA 6 👀"
 CRF = 26
 FD = 0.15
 DAY = "eq=contrast=1.07:saturation=1.15"
 DUSK = "curves=all='0/0 0.10/0.18 0.45/0.58 1/1',eq=saturation=1.12:contrast=1.05"
 SEG = [
-    ("race", 24.5, 5.4, 420, DAY, 0),          # monster truck flattens him: ELIMINATED
+    ("flip", 21.05, 6.95, 420, DAY, 0),          # HOOK: jeep rolls over and over
+    ("flip", 28.0, 1.6, 420, DAY, 0),          # lands upside down
     ("sport", 21.0, 2.25, 420, DAY, 0),        # sports car tries to pass...
     ("sportcc", 0.0, 2.5, 420, DAY, 0),        # crash cam, both cars
     ("sport", 25.75, 2.0, 420, DAY, 0),        # aftermath
@@ -26,9 +27,7 @@ SEG = [
     ("gate", 8.4, 2.0, 420, DUSK, 0),          # truck goes up
     ("heli2", 13.2, 6.6, 420, DUSK, 0),        # helicopter shot down, crashes on the runway
     ("heli", 12.5, 5.0, 420, DAY, 0),          # out of fuel, into the sea
-    ("flip", 13.3, 2.4, 420, DAY, 0),          # jeep clips the pole...
-    ("flip", 20.8, 7.2, 420, DAY, 0),          # ...and rolls over and over
-    ("flip", 28.0, 1.8, 420, DAY, 0.6),        # upside down
+    ("race", 24.5, 5.4, 420, DAY, 0.8),        # ends: monster truck flattens him, ELIMINATED
 ]
 CAP = []
 HUD_SRC = None
