@@ -110,6 +110,7 @@ p, d = play(i, prev, END); parts.append(p); t += d
 total = t
 # keep captions from overlapping the next one
 caps = [(c, a, min(b, caps[j + 1][1]) if j + 1 < len(caps) else b) for j, (c, a, b) in enumerate(caps)]
+caps += [tuple(x) for x in cfg.get("EXTRA_CAPS", [])]   # (text, start, end) on the output timeline
 
 body = f"{WD}/body.mp4"
 lst = f"{WD}/list.txt"

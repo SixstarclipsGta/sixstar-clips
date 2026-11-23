@@ -15,3 +15,4 @@ FREEZES = {
     "fly":  dict(t=28.12, cx=1400, cy=760, rx=170, ry=95, z=2.0, cap="…and this one learned to fly 🕊️"),
 }
 ORDER = ["run", "fall", "gate", "fly"]
+EXTRA_CAPS = [("He screams pretty real though 😅", 26.8, 30.3)]
