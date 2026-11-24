@@ -1,3 +1,4 @@
+# v3 (Zubair, 24 Nov): the ending alligator attack also opens the video; rest as v2.
 # v2 (Zubair, 24 Nov): deer first as the hook, then the swamp man, then the alligators (shorter), same ending.
 # Swamp trip (24 Nov raws 07, 09, 10, 11, 12, 13; 13 t = 12 t - 23.05), 22 Nov style, in the order it happened:
 # gets out of the Rancher next to two alligators and walks over them, kicks the second one, drives into the
@@ -14,7 +15,8 @@ BASE = "eq=brightness=0.05:contrast=1.08:saturation=1.18:gamma=1.08"
 HURT = "eq=contrast=1.05:saturation=1.08:gamma=1.05"
 KILL = "eq=contrast=1.04:saturation=1.05"
 SEG = [
-    ("11", 5.9, 6.1, 380, BASE, 0),             # HOOK: deer rams him flat in the first second
+    ("13", 21.6, 3.6, 330, HURT, 0),            # v3 HOOK (Zubair): the alligator attack from the ending, shown first as well
+    ("11", 5.9, 6.1, 380, BASE, 0),             # deer rams him flat
     ("09", 1.5, 3.5, 420, BASE, 0, 1.2),        # Rancher into the mangroves
     ("09", 7.2, 2.3, 200, BASE, 0),             # gets out
     ("10", 0.0, 4.6, 420, BASE, 0),             # a man crouched in the grass
