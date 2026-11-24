@@ -52,6 +52,7 @@ TITLE_FONT = "/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf"
 
 # Encoder (21 Nov: smaller files rule). Configs may override.
 CRF, PRESET, ABR = 24, "slow", "128k"
+ENC_EXTRA = []  # e.g. ["-maxrate", "4M", "-bufsize", "8M"] for 60 s+ videos
 
 # Optional: python3 story.py CONFIG.py  (a file that sets W, OUT, SEG, CAP, HUD_SRC, HUD_SEG)
 if len(sys.argv) > 1:
@@ -232,7 +233,7 @@ def main():
     fc.append(f"[{cur}]fade=t=in:st=0:d=0.2,fade=t=out:st={total-0.4:.2f}:d=0.4,format=yuv420p[out]")
     fc.append(f"[{prev_a}]afade=t=in:st=0:d=0.2,afade=t=out:st={total-0.5:.2f}:d=0.5[aout]")
     cmd = ["ffmpeg", "-v", "error", "-y"] + inputs + ["-filter_complex", ";".join(fc), "-map", "[out]", "-map", "[aout]",
-           "-t", f"{total:.2f}", "-c:v", "libx264", "-preset", PRESET, "-crf", str(CRF), "-pix_fmt", "yuv420p",
+           "-t", f"{total:.2f}", "-c:v", "libx264", "-preset", PRESET, "-crf", str(CRF), *ENC_EXTRA, "-pix_fmt", "yuv420p",
            "-c:a", "aac", "-b:a", ABR, "-movflags", "+faststart", OUT]
     print("total", round(total, 2), "starts", [round(s, 2) for s in starts])
     subprocess.run(cmd, check=True)
