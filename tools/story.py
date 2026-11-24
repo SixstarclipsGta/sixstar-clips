@@ -133,6 +133,11 @@ def title_png(path, text):
     if words and not words[-1].isascii():
         emo, words = words[-1], words[:-1]
     size = 74
+    for sz in (74, 70, 66, 62):  # a line that almost fits gets a slightly smaller font, so the emoji never sits alone
+        fz = ImageFont.truetype(TITLE_FONT, sz)
+        if d.textlength(" ".join(words), font=fz) + (int(sz * 0.95) + 12 if emo else 0) <= 1000:
+            size = sz
+            break
     f = ImageFont.truetype(TITLE_FONT, size)
     ew = emoji_img(emo, int(size * 0.95)).width + 12 if emo else 0
     lines, cur = [], ""
@@ -143,8 +148,12 @@ def title_png(path, text):
         else:
             cur = t
     lines.append(cur)
-    if d.textlength(lines[-1], font=f) + ew > 980:
-        lines.append("")
+    if d.textlength(lines[-1], font=f) + ew > 1000:
+        lw_ = lines[-1].split(" ")
+        if len(lw_) > 1:  # take the last word down with the emoji
+            lines[-1] = " ".join(lw_[:-1]); lines.append(lw_[-1])
+        else:
+            lines.append("")
     lh = int(size * 1.22)
     y = VY - 70 - lh * len(lines)
     for i, l in enumerate(lines):
@@ -179,7 +188,8 @@ def main():
             cw, ch_, _, _ = [int(v) for v in SEG_HUD["crop"].split(":")]
             sw, sh = int(cw * SEG_HUD["scale"]) // 2 * 2, int(ch_ * SEG_HUD["scale"]) // 2 * 2
             fc.append(src + f",split[s{i}][h{i}]")
-            fc.append(f"[h{i}]crop={SEG_HUD['crop']},scale={sw}:{sh}:flags=lanczos,pad={sw+8}:{sh+8}:4:4:color=0x2de2d0,format=rgba,setpts=PTS+{starts[i]:.3f}/TB[sh{i}]")
+            hpad = f",tpad=stop_mode=clone:stop_duration={hold}" if hold else ""  # the message stays up through the end hold
+            fc.append(f"[h{i}]crop={SEG_HUD['crop']},scale={sw}:{sh}:flags=lanczos,pad={sw+8}:{sh+8}:4:4:color=0x{SEG_HUD.get('border', '2de2d0')}{hpad},format=rgba,setpts=PTS+{starts[i]:.3f}/TB[sh{i}]")
             src = f"[s{i}]null"
         elif HUD_SEG is not None and i == HUD_SEG:
             fc.append(src + f",split[s{i}][h{i}]")
@@ -228,6 +238,9 @@ def main():
     if SEG_HUD:
         for i in SEG_HUD["segs"]:
             a, b = starts[i] + FD / 2, starts[i] + eff(SEG[i]) - SEG[i][5] - FD / 2
+            if i == n - 1:
+                b = total
+            a += SEG_HUD.get("delay", 0)
             fc.append(f"[{cur}][sh{i}]overlay=(W-w)/2:1722:eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[sh_o{i}]")
             cur = f"sh_o{i}"
     fc.append(f"[{cur}]fade=t=in:st=0:d=0.2,fade=t=out:st={total-0.4:.2f}:d=0.4,format=yuv420p[out]")
