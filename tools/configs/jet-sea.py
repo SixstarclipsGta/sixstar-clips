@@ -6,7 +6,7 @@
 W = "/home/claude/work/raw1124"
 OUT = "/home/claude/work/out/jetsea-game.mp4"
 STYLE = "simple"
-TITLE = "Nobody taught me how to land 💔"
+TITLE = "At least nobody will find it 😂"
 CRF = 26
 ENC_EXTRA = ["-maxrate", "4M", "-bufsize", "8M"]
 DAY = "eq=contrast=1.06:saturation=1.15"
