@@ -6,12 +6,12 @@
 W = "/home/claude/work/raw1124"
 OUT = "/home/claude/work/out/pier-game.mp4"
 STYLE = "simple"
-TITLE = "Made the jump. STILL failed 😤"
+TITLE = "Can a sheriff truck jump THIS in GTA 6?! 👀"
 CRF = 25
 BASE = "eq=brightness=0.05:contrast=1.08:saturation=1.18:gamma=1.08"
 CINE = BASE + ",crop=1708:960:106:60,scale=1920:1080:flags=lanczos"  # cinematic cam: zoom out its black bars
 SEG = [
-    ("16", 24.78, 1.9, 420, CINE, 0),           # HOOK and cover: frame 0 is the truck in the air (no fade-in)
+    ("16", 25.53, 1.45, 420, CINE, 0, 0.8),     # HOOK and cover (Zubair picked "B"): frame 0 = whole truck in the air over the water, side view; no fade-in
     ("15", 0.4, 7.2, 420, BASE, 0, 1.3),        # sheriff pickup down the track to the bridge
     ("15", 8.0, 8.4, 420, BASE, 0, 1.25),       # onto the broken bridge, stops at the gap
     ("15", 17.6, 4.6, 420, BASE, 0),            # reverses back up the track
