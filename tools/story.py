@@ -213,7 +213,7 @@ def main():
         tp = f"{W}/{os.path.basename(OUT)[:-4]}_title.png"
         title_png(tp, TITLE)
         inputs += ["-i", tp]
-        fc.append(f"[{prev_v}]split[fg][bgs];[bgs]scale=1920:1920,crop=1080:1920:420:0,boxblur=30:3,eq=brightness=-0.28:saturation=0.9[bg];"
+        fc.append(f"[{prev_v}]split[fg][bgs];[bgs]scale=1920:1920,crop=1080:1920:420:0,boxblur=30:3,eq=brightness=-0.16:saturation=0.95[bg];"
                   f"[bg][fg]overlay=0:{VY}[p0];[p0][{n}:v]overlay=0:0[c0]")
     else:
         inputs += ["-i", f"{W}/{CARD}"]
@@ -243,8 +243,10 @@ def main():
             a += SEG_HUD.get("delay", 0)
             fc.append(f"[{cur}][sh{i}]overlay=(W-w)/2:1722:eof_action=pass:enable='between(t,{a:.3f},{b:.3f})'[sh_o{i}]")
             cur = f"sh_o{i}"
-    fc.append(f"[{cur}]fade=t=in:st=0:d=0.2,fade=t=out:st={total-0.4:.2f}:d=0.4,format=yuv420p[out]")
-    fc.append(f"[{prev_a}]afade=t=in:st=0:d=0.2,afade=t=out:st={total-0.5:.2f}:d=0.5[aout]")
+    # No fade-in (Zubair, 25 Nov): a black first frame makes viewers skip and becomes the default cover.
+    # Frame 0 must be the bright, most attractive frame of the hook.
+    fc.append(f"[{cur}]fade=t=out:st={total-0.4:.2f}:d=0.4,format=yuv420p[out]")
+    fc.append(f"[{prev_a}]afade=t=in:st=0:d=0.04,afade=t=out:st={total-0.5:.2f}:d=0.5[aout]")
     cmd = ["ffmpeg", "-v", "error", "-y"] + inputs + ["-filter_complex", ";".join(fc), "-map", "[out]", "-map", "[aout]",
            "-t", f"{total:.2f}", "-c:v", "libx264", "-preset", PRESET, "-crf", str(CRF), *ENC_EXTRA, "-pix_fmt", "yuv420p",
            "-c:a", "aac", "-b:a", ABR, "-movflags", "+faststart", OUT]
