@@ -18,14 +18,19 @@ DAY = "eq=brightness=0.03:contrast=1.07:saturation=1.16:gamma=1.05"
 # 1440x810 instead (delogo left coloured streaks, don't use it).
 ZL = ",crop=1440:810:0:50,scale=1920:1080:flags=lanczos"
 DARK = "eq=brightness=0.05:contrast=1.06:saturation=1.16:gamma=1.14" + ZL
-HOOK = "eq=brightness=0.05:contrast=1.08:saturation=1.18:gamma=1.12,crop=1440:810:150:250,scale=1920:1080:flags=lanczos"
+# v2 (Zubair, 26 Nov: "Starting scene of Bigfoot when he was drinking blood? Why cut. Clear picture"):
+# the crouched-man scene at the start of 10 was in v1 but wide and small. Now it is the hook and cover,
+# zoomed 1.8x so both figures are clear (Jason holds his nose, the man hunched over, hands at his mouth),
+# it plays again in full in its place, and clip 10 runs from 0 to the end with NO cuts (the sky-camera
+# part 4.6 to 7.2 stays in: the man gets up at the right edge and runs).
+BLOOD = "eq=brightness=0.05:contrast=1.08:saturation=1.18:gamma=1.14,crop=1066:600:407:370,scale=1920:1080:flags=lanczos"
 SEG = [
-    ("10", 15.25, 1.0, 410, HOOK, 0),           # HOOK and cover: the man charges
+    ("10", 1.6, 1.5, 420, BLOOD, 0),            # HOOK and cover: the man crouched, "drinking blood", zoomed
     ("09", 1.5, 3.7, 420, DAY, 0),              # truck off the track into the mangroves
     ("09", 7.6, 4.6, 260, DARK, 0),             # gets out, holds his head, starts running
-    ("09", 20.9, 4.4, 120, DAY + ",crop=1386:780:0:90,scale=1920:1080:flags=lanczos", 0),        # pistol out, aims at the bushes
-    ("10", 0.0, 4.6, 420, DAY, 0),              # finds the man crouched in the grass
-    ("10", 7.2, 0.95, 700, DAY, 0),             # the man runs
+    ("09", 20.9, 4.4, 120, DAY + ",crop=1386:780:0:90,scale=1920:1080:flags=lanczos", 0),   # pistol out, aims at the bushes
+    ("10", 0.0, 4.85, 420, BLOOD, 0),           # finds him: the whole crouched scene, zoomed
+    ("10", 4.5, 3.65, 640, DAY, 0),             # camera swings up, the man gets up and runs
     ("10", 7.8, 22.1, 340, DAY, 3.0),           # chase, he vanishes, turns, fight, knocked out, carried
 ]
 SEG_HUD = None
