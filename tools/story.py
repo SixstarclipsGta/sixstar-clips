@@ -185,11 +185,12 @@ def main():
         inputs += ["-ss", str(ss), "-t", str(du), "-i", f"{W}/{f}.mp4"]
         src = f"[{i}:v]setpts=(PTS-STARTPTS)/{sp},fps=60000/1001"
         if SEG_HUD and i in SEG_HUD["segs"]:
-            cw, ch_, _, _ = [int(v) for v in SEG_HUD["crop"].split(":")]
+            hcrop = SEG_HUD.get("crops", {}).get(i, SEG_HUD.get("crop"))  # per-segment crop when the card moves
+            cw, ch_, _, _ = [int(v) for v in hcrop.split(":")]
             sw, sh = int(cw * SEG_HUD["scale"]) // 2 * 2, int(ch_ * SEG_HUD["scale"]) // 2 * 2
             fc.append(src + f",split[s{i}][h{i}]")
             hpad = f",tpad=stop_mode=clone:stop_duration={hold}" if hold else ""  # the message stays up through the end hold
-            fc.append(f"[h{i}]crop={SEG_HUD['crop']},scale={sw}:{sh}:flags=lanczos,pad={sw+8}:{sh+8}:4:4:color=0x{SEG_HUD.get('border', '2de2d0')}{hpad},format=rgba,setpts=PTS+{starts[i]:.3f}/TB[sh{i}]")
+            fc.append(f"[h{i}]crop={hcrop},scale={sw}:{sh}:flags=lanczos,pad={sw+8}:{sh+8}:4:4:color=0x{SEG_HUD.get('border', '2de2d0')}{hpad},format=rgba,setpts=PTS+{starts[i]:.3f}/TB[sh{i}]")
             src = f"[s{i}]null"
         elif HUD_SEG is not None and i == HUD_SEG:
             fc.append(src + f",split[s{i}][h{i}]")
