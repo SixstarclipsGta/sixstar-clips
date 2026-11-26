@@ -48,6 +48,9 @@ SEG_HUD = None
 # 22 Nov style: STYLE = "simple" -> no brand card, no step captions; one TITLE line on top,
 # square video at VY, blurred zoomed copy of the same video behind. Configs set STYLE, TITLE.
 STYLE, TITLE, VY = "card", "", 560
+# FULL = True (26 Nov): show the WHOLE 16:9 frame (1080x608, nothing cropped, HUD and minimap stay) at FULL_Y
+# instead of the 1080x1080 window. For videos where Zubair says "don't crop, as it is". Crop x in SEG is ignored.
+FULL, FULL_Y = False, 640
 TITLE_FONT = "/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf"
 
 # Encoder (21 Nov: smaller files rule). Configs may override.
@@ -196,7 +199,8 @@ def main():
             fc.append(src + f",split[s{i}][h{i}]")
             fc.append(f"[h{i}]crop=190:86:1720:20,scale=380:172:flags=lanczos,pad=388:180:4:4:color=0x2de2d0,format=rgba,setpts=PTS+{starts[i]:.3f}/TB[hud]")
             src = f"[s{i}]null"
-        v = src + f",{gr},crop=1080:1080:{x}:0,unsharp=5:5:0.6,format=yuv420p,setsar=1,settb=AVTB"
+        win = "scale=1080:608:flags=lanczos" if FULL else f"crop=1080:1080:{x}:0"
+        v = src + f",{gr},{win},unsharp=5:5:0.6,format=yuv420p,setsar=1,settb=AVTB"
         a = f"[{i}:a]asetpts=PTS-STARTPTS,aresample=48000,aformat=channel_layouts=stereo" + (("," + ",".join(["atempo=0.5"] * (1 if sp < 0.5 else 0) + [f"atempo={sp * 2 if sp < 0.5 else sp}"])) if sp != 1.0 else "")
         if hold:
             v += f",tpad=stop_mode=clone:stop_duration={hold}"
@@ -214,8 +218,9 @@ def main():
         tp = f"{W}/{os.path.basename(OUT)[:-4]}_title.png"
         title_png(tp, TITLE)
         inputs += ["-i", tp]
-        fc.append(f"[{prev_v}]split[fg][bgs];[bgs]scale=1920:1920,crop=1080:1920:420:0,boxblur=30:3,eq=brightness=-0.16:saturation=0.95[bg];"
-                  f"[bg][fg]overlay=0:{VY}[p0];[p0][{n}:v]overlay=0:0[c0]")
+        bgsc, vy = ("scale=3414:1920,crop=1080:1920:1167:0", FULL_Y) if FULL else ("scale=1920:1920,crop=1080:1920:420:0", VY)
+        fc.append(f"[{prev_v}]split[fg][bgs];[bgs]{bgsc},boxblur=30:3,eq=brightness=-0.16:saturation=0.95[bg];"
+                  f"[bg][fg]overlay=0:{vy}[p0];[p0][{n}:v]overlay=0:0[c0]")
     else:
         inputs += ["-i", f"{W}/{CARD}"]
         fc.append(f"[{prev_v}]pad=1080:1920:0:460:color=0x0a0b10[p0];[p0][{n}:v]overlay=0:0[c0]")
